@@ -2,7 +2,7 @@
 
 import reflex as rx
 
-from full_stack_python.pages import about, cart, game_detail, home, shop
+from full_stack_python.pages import about, account, admin, cart, contact, game_detail, home, shop
 
 app = rx.App(
     theme=rx.theme(

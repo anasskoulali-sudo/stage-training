@@ -2,31 +2,50 @@
 
 import reflex as rx
 
-from full_stack_python.components.game_card import game_card
+from full_stack_python.components.game_card import game_card_var
 from full_stack_python.components.layout import page_layout
-from full_stack_python.data import CATEGORIES, get_featured_games
+from full_stack_python.state import ShopState
+
+
+def category_link(category: rx.Var[str]) -> rx.Component:
+    return rx.link(
+        rx.box(
+            rx.vstack(
+                rx.icon("layers", size=28, color="#a78bfa"),
+                rx.text(category, size="4", weight="bold"),
+                rx.text("Browse titles", size="2", color=rx.color("gray", 11)),
+                spacing="2",
+                align="center",
+            ),
+            padding="1.5rem",
+            bg=rx.color("gray", 2),
+            border=f"1px solid {rx.color('gray', 6)}",
+            border_radius="0.75rem",
+            _hover={"border_color": "#7c3aed"},
+        ),
+        href="/shop?category=" + category,
+        text_decoration="none",
+        color="inherit",
+    )
 
 
 @rx.page(route="/", title="Nexus Games | Home")
 def home() -> rx.Component:
-    featured = get_featured_games()
-
     return page_layout(
         rx.box(
             rx.container(
                 rx.vstack(
                     rx.box(
                         rx.vstack(
-                            rx.badge("New releases every week", color_scheme="purple", size="2"),
+                            rx.badge(ShopState.hero_badge, color_scheme="purple", size="2"),
                             rx.heading(
-                                "Level Up Your Game Library",
+                                ShopState.hero_title,
                                 size="9",
                                 weight="bold",
                                 text_align="center",
                             ),
                             rx.text(
-                                "Discover blockbuster titles, indie gems, and everything in between. "
-                                "One shop, every platform.",
+                                ShopState.hero_subtitle,
                                 size="5",
                                 color=rx.color("gray", 11),
                                 text_align="center",
@@ -62,61 +81,42 @@ def home() -> rx.Component:
                         width="100%",
                         background="radial-gradient(ellipse at top, rgba(124,58,237,0.2), transparent 60%)",
                     ),
-                    rx.vstack(
-                        rx.hstack(
-                            rx.heading("Featured Games", size="7", weight="bold"),
-                            rx.spacer(),
-                            rx.link(
-                                rx.button("See all", variant="ghost", color_scheme="purple"),
-                                href="/shop",
-                            ),
-                            width="100%",
-                            align="center",
-                        ),
-                        rx.grid(
-                            *[game_card(game) for game in featured[:6]],
-                            columns=rx.breakpoints(initial="1", sm="2", lg="3"),
-                            spacing="5",
-                            width="100%",
-                        ),
-                        spacing="4",
-                        width="100%",
-                    ),
-                    rx.vstack(
-                        rx.heading("Shop by Category", size="7", weight="bold"),
-                        rx.grid(
-                            *[
+                    rx.cond(
+                        ShopState.featured_games.length() > 0,
+                        rx.vstack(
+                            rx.hstack(
+                                rx.heading("Featured Games", size="7", weight="bold"),
+                                rx.spacer(),
                                 rx.link(
-                                    rx.box(
-                                        rx.vstack(
-                                            rx.icon("layers", size=28, color="#a78bfa"),
-                                            rx.text(category, size="4", weight="bold"),
-                                            rx.text(
-                                                "Browse titles",
-                                                size="2",
-                                                color=rx.color("gray", 11),
-                                            ),
-                                            spacing="2",
-                                            align="center",
-                                        ),
-                                        padding="1.5rem",
-                                        bg=rx.color("gray", 2),
-                                        border=f"1px solid {rx.color('gray', 6)}",
-                                        border_radius="0.75rem",
-                                        _hover={"border_color": "#7c3aed"},
-                                    ),
-                                    href=f"/shop?category={category}",
-                                    text_decoration="none",
-                                    color="inherit",
-                                )
-                                for category in CATEGORIES
-                            ],
-                            columns=rx.breakpoints(initial="2", sm="3", lg="5"),
+                                    rx.button("See all", variant="ghost", color_scheme="purple"),
+                                    href="/shop",
+                                ),
+                                width="100%",
+                                align="center",
+                            ),
+                            rx.grid(
+                                rx.foreach(ShopState.featured_games, game_card_var),
+                                columns=rx.breakpoints(initial="1", sm="2", lg="3"),
+                                spacing="5",
+                                width="100%",
+                            ),
                             spacing="4",
                             width="100%",
                         ),
-                        spacing="4",
-                        width="100%",
+                    ),
+                    rx.cond(
+                        ShopState.categories.length() > 0,
+                        rx.vstack(
+                            rx.heading("Shop by Category", size="7", weight="bold"),
+                            rx.grid(
+                                rx.foreach(ShopState.categories, category_link),
+                                columns=rx.breakpoints(initial="2", sm="3", lg="5"),
+                                spacing="4",
+                                width="100%",
+                            ),
+                            spacing="4",
+                            width="100%",
+                        ),
                     ),
                     spacing="8",
                     padding_y="2rem",

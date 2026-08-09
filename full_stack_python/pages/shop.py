@@ -4,11 +4,21 @@ import reflex as rx
 
 from full_stack_python.components.game_card import game_card_var
 from full_stack_python.components.layout import page_layout
-from full_stack_python.data import CATEGORIES
 from full_stack_python.state import ShopState
 
 
 def category_button(category: str) -> rx.Component:
+    is_active = ShopState.selected_category == category
+    return rx.button(
+        category,
+        size="2",
+        variant=rx.cond(is_active, "solid", "soft"),
+        color_scheme="purple",
+        on_click=ShopState.set_category(category),
+    )
+
+
+def category_button_var(category: rx.Var[str]) -> rx.Component:
     is_active = ShopState.selected_category == category
     return rx.button(
         category,
@@ -25,9 +35,9 @@ def shop() -> rx.Component:
         rx.container(
             rx.vstack(
                 rx.vstack(
-                    rx.heading("Game Shop", size="8", weight="bold"),
+                    rx.heading(ShopState.shop_title, size="8", weight="bold"),
                     rx.text(
-                        "Browse our full catalog. Use search and filters to find your next adventure.",
+                        ShopState.shop_subtitle,
                         size="4",
                         color=rx.color("gray", 11),
                     ),
@@ -57,7 +67,7 @@ def shop() -> rx.Component:
                 ),
                 rx.hstack(
                     category_button("All"),
-                    *[category_button(category) for category in CATEGORIES],
+                    rx.foreach(ShopState.categories, category_button_var),
                     spacing="2",
                     flex_wrap="wrap",
                     width="100%",

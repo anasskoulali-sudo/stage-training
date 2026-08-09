@@ -4,6 +4,7 @@ import reflex as rx
 
 from full_stack_python.components.game_card import game_card_var
 from full_stack_python.components.layout import page_layout
+from full_stack_python.components.reviews_section import game_community_section
 from full_stack_python.state import ShopState
 
 
@@ -108,6 +109,7 @@ def game_detail() -> rx.Component:
                         ),
                         width="100%",
                     ),
+                    game_community_section(),
                     rx.cond(
                         ShopState.related_games.length() > 0,
                         rx.vstack(

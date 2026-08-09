@@ -2,15 +2,39 @@
 
 import reflex as rx
 
-from full_stack_python.state import ShopState
+from full_stack_python.state import AuthState, ShopState
 
 
 NAV_LINKS: list[tuple[str, str, str]] = [
     ("Home", "home", "/"),
     ("Shop", "gamepad-2", "/shop"),
-    ("Cart", "shopping-cart", "/cart"),
     ("About", "info", "/about"),
 ]
+
+
+def nav_account_icon() -> rx.Component:
+    return rx.link(
+        rx.box(
+            rx.icon("user", size=20, color="white"),
+            bg=rx.cond(
+                AuthState.is_logged_in,
+                "linear-gradient(135deg, #7c3aed, #4f46e5)",
+                rx.color("gray", 8),
+            ),
+            padding="0.55rem",
+            border_radius="full",
+            border=f"2px solid {rx.color('gray', 6)}",
+            _hover={
+                "border_color": "#a78bfa",
+                "transform": "scale(1.05)",
+            },
+            transition="transform 0.15s, border-color 0.15s",
+            cursor="pointer",
+        ),
+        href="/account",
+        text_decoration="none",
+        title="Account",
+    )
 
 
 def nav_link(text: str, icon: str, url: str) -> rx.Component:
@@ -41,8 +65,8 @@ def navbar() -> rx.Component:
                             border_radius="0.5rem",
                         ),
                         rx.vstack(
-                            rx.text("Nexus Games", size="5", weight="bold"),
-                            rx.text("Your gaming destination", size="1", color=rx.color("gray", 11)),
+                            rx.text(ShopState.store_name, size="5", weight="bold"),
+                            rx.text(ShopState.store_tagline, size="1", color=rx.color("gray", 11)),
                             spacing="0",
                             align="start",
                         ),
@@ -56,11 +80,27 @@ def navbar() -> rx.Component:
                 rx.desktop_only(
                     rx.hstack(
                         *[nav_link(text, icon, url) for text, icon, url in NAV_LINKS],
+                        rx.cond(
+                            AuthState.is_customer,
+                            nav_link("Contact Us", "headphones", "/contact"),
+                        ),
                         spacing="6",
                         align="center",
                     ),
                 ),
                 rx.spacer(),
+                rx.cond(
+                    AuthState.is_admin,
+                    rx.link(
+                        rx.button(
+                            rx.icon("layout-dashboard", size=18),
+                            "Admin",
+                            variant="soft",
+                            color_scheme="purple",
+                        ),
+                        href="/admin",
+                    ),
+                ),
                 rx.link(
                     rx.button(
                         rx.icon("shopping-cart", size=18),
@@ -71,6 +111,7 @@ def navbar() -> rx.Component:
                     ),
                     href="/cart",
                 ),
+                nav_account_icon(),
                 rx.mobile_and_tablet(
                     rx.menu.root(
                         rx.menu.trigger(
@@ -91,6 +132,45 @@ def navbar() -> rx.Component:
                                 )
                                 for text, icon, url in NAV_LINKS
                             ],
+                            rx.cond(
+                                AuthState.is_customer,
+                                rx.menu.item(
+                                    rx.link(
+                                        rx.hstack(
+                                            rx.icon("headphones", size=16),
+                                            rx.text("Contact Us"),
+                                            spacing="2",
+                                        ),
+                                        href="/contact",
+                                        width="100%",
+                                    ),
+                                ),
+                            ),
+                            rx.menu.item(
+                                rx.link(
+                                    rx.hstack(
+                                        rx.icon("user", size=16),
+                                        rx.text("Account"),
+                                        spacing="2",
+                                    ),
+                                    href="/account",
+                                    width="100%",
+                                ),
+                            ),
+                            rx.cond(
+                                AuthState.is_admin,
+                                rx.menu.item(
+                                    rx.link(
+                                        rx.hstack(
+                                            rx.icon("layout-dashboard", size=16),
+                                            rx.text("Admin"),
+                                            spacing="2",
+                                        ),
+                                        href="/admin",
+                                        width="100%",
+                                    ),
+                                ),
+                            ),
                         ),
                     ),
                 ),
@@ -115,9 +195,9 @@ def footer() -> rx.Component:
             rx.vstack(
                 rx.hstack(
                     rx.vstack(
-                        rx.heading("Nexus Games", size="5"),
+                        rx.heading(ShopState.store_name, size="5"),
                         rx.text(
-                            "The best place to discover and buy video games.",
+                            ShopState.footer_description,
                             size="2",
                             color=rx.color("gray", 11),
                         ),
@@ -129,15 +209,25 @@ def footer() -> rx.Component:
                         rx.text("Quick Links", weight="bold", size="3"),
                         rx.link("Browse Shop", href="/shop", size="2"),
                         rx.link("Your Cart", href="/cart", size="2"),
+                        rx.link("Your Account", href="/account", size="2"),
+                        rx.cond(
+                            AuthState.is_customer,
+                            rx.link("Contact Us", href="/contact", size="2"),
+                        ),
                         rx.link("About Us", href="/about", size="2"),
                         spacing="2",
                         align="start",
                     ),
                     rx.vstack(
                         rx.text("Categories", weight="bold", size="3"),
-                        rx.link("RPG Games", href="/shop?category=RPG", size="2"),
-                        rx.link("Action Games", href="/shop?category=Action", size="2"),
-                        rx.link("Sports Games", href="/shop?category=Sports", size="2"),
+                        rx.foreach(
+                            ShopState.categories,
+                            lambda category: rx.link(
+                                category + " Games",
+                                href="/shop?category=" + category,
+                                size="2",
+                            ),
+                        ),
                         spacing="2",
                         align="start",
                     ),
@@ -148,7 +238,7 @@ def footer() -> rx.Component:
                 ),
                 rx.divider(),
                 rx.text(
-                    "© 2026 Nexus Games. Built with Reflex.",
+                    ShopState.copyright_text,
                     size="2",
                     color=rx.color("gray", 10),
                 ),

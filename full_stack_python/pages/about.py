@@ -3,6 +3,7 @@
 import reflex as rx
 
 from full_stack_python.components.layout import page_layout
+from full_stack_python.state import ShopState
 
 
 @rx.page(route="/about", title="Nexus Games | About")
@@ -10,11 +11,9 @@ def about() -> rx.Component:
     return page_layout(
         rx.container(
             rx.vstack(
-                rx.heading("About Nexus Games", size="8", weight="bold"),
+                rx.heading(ShopState.about_title, size="8", weight="bold"),
                 rx.text(
-                    "Nexus Games is a demo gaming shop built with Reflex — a full-stack Python "
-                    "framework for modern web apps. Browse titles, add them to your cart, and "
-                    "explore linked pages across the store.",
+                    ShopState.about_description,
                     size="4",
                     color=rx.color("gray", 11),
                     line_height="1.8",
@@ -23,9 +22,9 @@ def about() -> rx.Component:
                 rx.grid(
                     rx.box(
                         rx.icon("gamepad-2", size=32, color="#a78bfa"),
-                        rx.heading("Curated Catalog", size="5"),
+                        rx.heading(ShopState.about_feature_1_title, size="5"),
                         rx.text(
-                            "Hand-picked games across RPG, action, sports, and more.",
+                            ShopState.about_feature_1_text,
                             size="3",
                             color=rx.color("gray", 11),
                         ),
@@ -37,9 +36,9 @@ def about() -> rx.Component:
                     ),
                     rx.box(
                         rx.icon("shopping-cart", size=32, color="#a78bfa"),
-                        rx.heading("Smart Cart", size="5"),
+                        rx.heading(ShopState.about_feature_2_title, size="5"),
                         rx.text(
-                            "Add games from any page and manage quantities in your cart.",
+                            ShopState.about_feature_2_text,
                             size="3",
                             color=rx.color("gray", 11),
                         ),
@@ -51,9 +50,9 @@ def about() -> rx.Component:
                     ),
                     rx.box(
                         rx.icon("link", size=32, color="#a78bfa"),
-                        rx.heading("Connected Pages", size="5"),
+                        rx.heading(ShopState.about_feature_3_title, size="5"),
                         rx.text(
-                            "Home, shop, game details, cart, and about — all linked together.",
+                            ShopState.about_feature_3_text,
                             size="3",
                             color=rx.color("gray", 11),
                         ),

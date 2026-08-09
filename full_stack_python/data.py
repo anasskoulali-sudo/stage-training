@@ -1,9 +1,9 @@
-"""Game catalog data for the gaming shop."""
+"""Default catalog and site content for the gaming shop."""
 
 from dataclasses import dataclass
 
 
-@dataclass(frozen=True)
+@dataclass
 class Game:
     id: str
     title: str
@@ -14,9 +14,10 @@ class Game:
     description: str
     rating: float
     featured: bool = False
+    visible: bool = True
 
 
-GAMES: list[Game] = [
+DEFAULT_GAMES: list[Game] = [
     Game(
         id="elden-ring",
         title="Elden Ring",
@@ -186,20 +187,3 @@ GAMES: list[Game] = [
         featured=False,
     ),
 ]
-
-CATEGORIES: list[str] = sorted({game.category for game in GAMES})
-
-
-def get_game_by_id(game_id: str) -> Game | None:
-    for game in GAMES:
-        if game.id == game_id:
-            return game
-    return None
-
-
-def get_featured_games() -> list[Game]:
-    return [game for game in GAMES if game.featured]
-
-
-def get_games_by_category(category: str) -> list[Game]:
-    return [game for game in GAMES if game.category == category]
