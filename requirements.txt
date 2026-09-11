@@ -1,2 +1,5 @@
-
 reflex==0.9.7
+pymysql
+sqlmodel
+bcrypt
+python-dotenv

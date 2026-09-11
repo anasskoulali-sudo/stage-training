@@ -4,3 +4,7 @@ assets/external/
 __pycache__/
 *.db
 .web
+.venv/
+venv/
+uploaded_files/
+.env

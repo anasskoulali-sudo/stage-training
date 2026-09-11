@@ -2,15 +2,10 @@
 
 import reflex as rx
 
-from full_stack_python.pages import about, account, admin, cart, contact, game_detail, home, shop
+from backend import models as db_models  # noqa: F401
+from backend.db import ensure_schema
+from frontend import pages  # noqa: F401
 
-app = rx.App(
-    theme=rx.theme(
-        appearance="dark",
-        accent_color="purple",
-        radius="medium",
-    ),
-)
+ensure_schema()
 
-# Import pages so @rx.page decorators register with the app.
-__all__ = ["app"]
+app = rx.App()

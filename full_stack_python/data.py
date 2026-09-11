@@ -1,21 +1,6 @@
-"""Default catalog and site content for the gaming shop."""
+"""Seed catalog, reviews, comments, and support tickets."""
 
-from dataclasses import dataclass
-
-
-@dataclass
-class Game:
-    id: str
-    title: str
-    price: float
-    category: str
-    platform: str
-    image: str
-    description: str
-    rating: float
-    featured: bool = False
-    visible: bool = True
-
+from full_stack_python.models import Game, GameComment, GameReview, SupportTicket
 
 DEFAULT_GAMES: list[Game] = [
     Game(
@@ -185,5 +170,109 @@ DEFAULT_GAMES: list[Game] = [
         ),
         rating=4.8,
         featured=False,
+    ),
+]
+
+
+SAMPLE_REVIEWS: list[GameReview] = [
+    GameReview(
+        game_id="elden-ring",
+        author="Alex",
+        rating=5,
+        text="An incredible open world. Combat feels tight and the exploration never gets old.",
+    ),
+    GameReview(
+        game_id="elden-ring",
+        author="Sam",
+        rating=4,
+        text="Challenging but fair. Took me 80 hours and I loved every minute.",
+    ),
+    GameReview(
+        game_id="baldurs-gate-3",
+        author="Jordan",
+        rating=5,
+        text="Best RPG in years. The story branches are amazing.",
+    ),
+    GameReview(
+        game_id="hades-2",
+        author="Riley",
+        rating=5,
+        text="Even better than the first. The art and music are top tier.",
+    ),
+]
+
+
+SAMPLE_COMMENTS: list[GameComment] = [
+    GameComment(
+        game_id="elden-ring",
+        author="Chris",
+        text="Pro tip: explore Limgrave thoroughly before heading north.",
+    ),
+    GameComment(
+        game_id="elden-ring",
+        author="Morgan",
+        text="Does this run well on Steam Deck for anyone?",
+    ),
+    GameComment(
+        game_id="zelda-totk",
+        author="Taylor",
+        text="The building mechanics alone are worth the price.",
+    ),
+    GameComment(
+        game_id="baldurs-gate-3",
+        author="Casey",
+        text="Playing co-op with friends makes this a whole different game.",
+    ),
+    GameComment(
+        game_id="hades-2",
+        author="Jamie",
+        text="Melinoë's dash attack combo is so satisfying.",
+    ),
+]
+
+
+SAMPLE_SUPPORT_TICKETS: list[SupportTicket] = [
+    SupportTicket(
+        author="Alex",
+        subject="Order not received",
+        message=(
+            "I ordered Elden Ring three days ago but still haven't received my download code. "
+            "Can you check my order status?"
+        ),
+        category="Order",
+        status="Open",
+        created_at="Aug 7, 2026",
+    ),
+    SupportTicket(
+        author="Jordan",
+        subject="Refund request — Cyberpunk 2077",
+        message="The game crashes on launch on my PC. I'd like a refund within the 14-day window.",
+        category="Refund",
+        status="In Progress",
+        created_at="Aug 6, 2026",
+    ),
+    SupportTicket(
+        author="Sam",
+        subject="Can't sign in to my account",
+        message="Password reset emails never arrive. I've checked spam folders twice.",
+        category="Technical",
+        status="Resolved",
+        created_at="Aug 4, 2026",
+    ),
+    SupportTicket(
+        author="Taylor",
+        subject="Wrong region game key",
+        message="I received a US key but I need an EU key for Nintendo Switch. Please swap it.",
+        category="Order",
+        status="Open",
+        created_at="Aug 8, 2026",
+    ),
+    SupportTicket(
+        author="Riley",
+        subject="Double charge on checkout",
+        message="My card was charged twice for the same order (#4821). Please refund one payment.",
+        category="Billing",
+        status="In Progress",
+        created_at="Aug 5, 2026",
     ),
 ]
